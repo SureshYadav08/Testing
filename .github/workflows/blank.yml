@@ -1,21 +1,23 @@
-name: Print Folder and Subfolder Name
+name: Folder Structure Changes
 
 on:
   push:
-    paths:
-      - '*/**' # Triggers on any changes within subfolders
+    branches:
+      - 'sub-branch'
 
 jobs:
-  print-folder-names:
+  folder_changes:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Print Folder Structure
+      - name: List folder changes
+        id: folder_changes
         run: |
-          for d in */**/; do
-            echo "Folder Name: $d"
-            find "$d" -type f -name "changelog.xml" -exec dirname {} \;
-          done
+          git fetch --depth=1 origin main
+          CHANGED_FOLDERS=$(git diff --name-only main...$GITHUB_SHA | grep '/' | cut -d'/' -f1 | sort -u)
+          echo "::set-output name=changed_folders::$CHANGED_FOLDERS"
+
+      - name: Display changes
+        run: echo "Changed folders: ${{ steps.folder_changes.outputs.changed_folders }}"
