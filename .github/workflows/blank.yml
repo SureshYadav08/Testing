@@ -2,15 +2,23 @@ name: List Changed Folders
 
 on:
   pull_request:
-    types: [opened]
+    branches:
+      - main
 
 jobs:
-  list-changes:
+  list-folders:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: List changed folders
+        with:
+          fetch-depth: 0
+      - uses: actions/git-diff@v4
+        id: diff
+        with:
+          base: main
+      - name: List changed folders and subfolders
         run: |
-          git diff --name-only main | while read -r file; do
-            echo "$(dirname "$file")"
-          done | sort -u
+          echo "Changed folders and subfolders:"
+          for file in ${{ steps.diff.outputs.modified_files }}; do
+            echo "$(dirname $file)"
+          done
