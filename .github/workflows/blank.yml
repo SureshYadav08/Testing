@@ -17,5 +17,5 @@ jobs:
       - name: List changed folders and subfolders
         id: list-changes
         run: |
-          git diff --name-only main ${{ github.event.pull_request.head.sha }} | grep '/' | cut -d'/' -f1 | sort -u > changed_folders.txt
+          git diff --name-only main ${{ github.event.pull_request.head.sha }} | grep '/' | cut -d'/' -f1-2 | sort -u > changed_folders.txt
           cat changed_folders.txt
