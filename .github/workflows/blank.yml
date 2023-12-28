@@ -1,23 +1,16 @@
-name: Folder Structure Changes
+name: List Changed Folders
 
 on:
-  push:
-    branches:
-      - 'sub-branch'
+  pull_request:
+    types: [opened]
 
 jobs:
-  folder_changes:
+  list-changes:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: List folder changes
-        id: folder_changes
+      - uses: actions/checkout@v3
+      - name: List changed folders
         run: |
-          git fetch --depth=1 origin main
-          CHANGED_FOLDERS=$(git diff --name-only main...$GITHUB_SHA | grep '/' | cut -d'/' -f1 | sort -u)
-          echo "::set-output name=changed_folders::$CHANGED_FOLDERS"
-
-      - name: Display changes
-        run: echo "Changed folders: ${{ steps.folder_changes.outputs.changed_folders }}"
+          git diff --name-only main | while read -r file; do
+            echo "$(dirname "$file")"
+          done | sort -u
