@@ -9,16 +9,13 @@ jobs:
   list-folders:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
         with:
+          ref: main
           fetch-depth: 0
-      - uses: actions/git-diff@v4
-        id: diff
-        with:
-          base: main
+
       - name: List changed folders and subfolders
+        id: list-changes
         run: |
-          echo "Changed folders and subfolders:"
-          for file in ${{ steps.diff.outputs.modified_files }}; do
-            echo "$(dirname $file)"
-          done
+          git diff --name-only main ${{ github.event.pull_request.head.sha }} | grep '/' | cut -d'/' -f1 | sort -u > changed_folders.txt
+          cat changed_folders.txt
