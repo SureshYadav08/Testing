@@ -18,7 +18,7 @@ on:
 jobs:
   dev_stages_workflow:
     runs-on: windows-latest
-    if: github.event.inputs.environment == 'Dev' || github.event_name == 'pull_request'
+    if: github.event.inputs.environment == 'Dev'
     steps:
       - name: Clone Repo
         uses: actions/checkout@v3
@@ -45,7 +45,7 @@ jobs:
 
   qa_stages_workflow:
     runs-on: windows-latest
-    if: github.event.inputs.environment == 'QA' && github.repository.branches == 'main'
+    if: github.event.inputs.environment == 'QA'
     steps:
       - name: Clone Repo
         uses: actions/checkout@v3
@@ -69,7 +69,7 @@ jobs:
 
   prod_stages_workflow:
     runs-on: windows-latest
-    if: github.event.inputs.environment == 'PROD' && github.repository.branches == 'main'
+    if: github.event.inputs.environment == 'PROD'
     steps:
       - name: Clone Repo
         uses: actions/checkout@v3
