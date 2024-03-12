@@ -41,7 +41,7 @@ jobs:
 
   qa_stages_workflow:
     runs-on: windows-latest
-    if: github.event.inputs.environment == 'QA' && ${{ github.ref == 'refs/heads/main' }}
+    if: github.event.inputs.environment == 'QA' && github.ref == 'refs/heads/main'
     steps:
       - name: Clone Repo
         uses: actions/checkout@v3
@@ -65,7 +65,7 @@ jobs:
 
   prod_stages_workflow:
     runs-on: windows-latest
-    if: github.event.inputs.environment == 'PROD' && ${{ github.ref == 'refs/heads/main' }}
+    if: github.event.inputs.environment == 'PROD' && github.ref == 'refs/heads/main'
     steps:
       - name: Clone Repo
         uses: actions/checkout@v3
