@@ -1,0 +1,92 @@
+name: Stages Creation Workflow
+on:
+  workflow_dispatch:
+    inputs:
+        environment:
+          required: true
+          type: choice
+          description: "environment"
+          options:
+            - "Dev"
+            - "QA"
+            - "PROD"
+
+  pull_request:
+    branches:
+      - main
+    
+jobs:
+  dev_stages_workflow:
+    runs-on: windows-latest
+    if: github.event.inputs.environment == 'Dev' || github.event_name == 'pull_request'
+    steps:
+      - name: Clone Repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Install pywin32 package
+        run: |
+          python -m pip install pandas==2.1.2
+          python -m pip install sqlalchemy
+          python -m pip install snowflake-sqlalchemy
+      
+      - name: Run stages creation python script
+        run: |
+          cd snowflake_stages_automation
+          python --version
+          pwd
+          echo "dev"
+          $env:PATH = "C:\hostedtoolcache\windows\Python\3.9\x64\Scripts;$env:PATH"
+          python snowflakes_stages_script.py "dev" ${{ secrets.snowflake_username }} ${{ secrets.snowflake_password }} ${{ secrets.snowflake_account }}
+
+  qa_stages_workflow:
+    runs-on: windows-latest
+    if: github.event.inputs.environment == 'QA' && github.repository.branches == 'main'
+    steps:
+      - name: Clone Repo
+        uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+            python-version: "3.9"
+      - name: Install pywin32 package
+        run: |
+            python -m pip install pandas==2.1.2
+            python -m pip install sqlalchemy
+            python -m pip install snowflake-sqlalchemy
+      - name: Run stages creation python script
+        run: |
+            cd snowflake_stages_automation
+            python --version
+            pwd
+            echo "qa"
+            $env:PATH = "C:\hostedtoolcache\windows\Python\3.9\x64\Scripts;$env:PATH"
+            python snowflakes_stages_script.py "qa" ${{ secrets.snowflake_username }} ${{ secrets.snowflake_password }} ${{ secrets.snowflake_account }}
+
+  prod_stages_workflow:
+    runs-on: windows-latest
+    if: github.event.inputs.environment == 'PROD' && github.repository.branches == 'main'
+    steps:
+      - name: Clone Repo
+        uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+            python-version: "3.9"
+      - name: Install pywin32 package
+        run: |
+            python -m pip install pandas==2.1.2
+            python -m pip install sqlalchemy
+            python -m pip install snowflake-sqlalchemy
+      - name: Run stages creation python script
+        run: |
+            cd snowflake_stages_automation
+            python --version
+            pwd
+            echo "prod"
+            $env:PATH = "C:\hostedtoolcache\windows\Python\3.9\x64\Scripts;$env:PATH"
+            python snowflakes_stages_script.py "prod" ${{ secrets.snowflake_username }} ${{ secrets.snowflake_password }} ${{ secrets.snowflake_account }}
