@@ -10,11 +10,7 @@ on:
             - "Dev"
             - "QA"
             - "PROD"
-
-  pull_request:
-    branches:
-      - main
-    
+            
 jobs:
   dev_stages_workflow:
     runs-on: windows-latest
